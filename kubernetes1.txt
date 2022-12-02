@@ -1,0 +1,104 @@
+First Task -
+do whaterver names mentioned in your labs.. 
+ 
+source <(gsutil cat gs://cloud-training/gsp318/marking/setup_marking_v2.sh)
+gcloud source repos clone valkyrie-app --project=qwiklabs-gcp-01-096d3d9fe9fc [Your Project Id]
+cd valkyrie-app
+cat > Dockerfile <<EOF
+copy and paste the content from the lab..
+enter and  EOF
+docker build -t valkyrie-dev:v0.0.3 . [AS PER YOUR NAME AND NUMBER]
+cd ..
+./step1_v2.sh   // as per your name given
+
+
+2nd Task
+
+docker run -p 8080:8080 valkyrie-dev:v0.0.3 & [change name and number as per your lab names]
+
+review on port 8080
+
+./step2_v2.sh  // name as per given
+
+Task -- 3
+
+docker tag valkyrie-dev:v0.0.3 gcr.io/qwiklabs-gcp-01-096d3d9fe9fc/valkyrie-dev:v0.0.3    // image name and tag changes as per given in your lab.
+
+docker push gcr.io/qwiklabs-gcp-01-096d3d9fe9fc/valkyrie-dev:v0.0.3
+
+Task 4 -----
+
+gcloud container clusters get-credentials valkyrie-dev --zone us-east1-d
+cd valkyrie-app
+from gcr to 3 remove it
+sed -i s#IMAGE_HERE#gcr.io/qwiklabs-gcp-01-096d3d9fe9fc/valkyrie-dev:v0.0.3#g k8s/deployment.yaml [copy the middle one from there]
+kubectl create -f k8s/deployment.yaml
+kubectl create -f k8s/service.yaml
+
+
+TASK 5 -----
+
+
+git merge origin/kurt-dev
+kubectl edit deployment valkyrie-dev
+
+press i, change the replica from 1 to 4 or whatever mentioned.
+
+name and tag changes as mentioned in second task.
+also version will change as mentioned in task 5
+
+docker build -t gcr.io/$GOOGLE_CLOUD_PROJECT/valkyrie-dev:v0.0.4 . 
+
+same changes as above
+
+docker push gcr.io/$GOOGLE_CLOUD_PROJECT/valkyrie-dev:v0.0.4
+
+kubectl edit deployment valkyrie-dev
+
+change the image numger mentioned in task 5
+
+
+
+
+Sixth and Final Task -
+
+docker ps
+docker kill container_id  //container id from previous
+
+
+
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/component=jenkins-master" -l "app.kubernetes.io/instance=cd" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &
+
+printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+
+click web preview
+
+gcloud source repos list  // to get repo link
+
+// jenkins work
+click jenins, credentials, global, adding some new credentials, google service account for metadata
+
+go to dashboard.. new item, name as given in lab click pipeline click ok
+
+pipline script from scm  , none -> git
+copy paste url from terminal
+credential should be changed
+apply
+
+now do these commands
+
+
+sed -i "s/green/orange/g" source/html.go
+sed -i "s/YOUR_PROJECT/$GOOGLE_CLOUD_PROJECT/g" Jenkinsfile
+git config --global user.email "you@example.com"      // email from lab
+git config --global user.name "student"      // user name from the current account          
+git add .
+git commit -m "built pipeline init"
+git push 
+
+
+no go to jenkins again
+
+click on build now in valkyrie app
+
