@@ -67,7 +67,8 @@ gcloud auth configure-docker us-central1-docker.pkg.dev
 docker images
 
 //copy and paste the project id and repository in PROJECT-ID and REPOSITORY respectively 
-// copy the image with tag from task 2 and replace it for <Docker Image>:<Tag Name> 
+// copy the image with tag from task 2 and replace it for <Docker Image>:<Tag Name>
+// copy and paste the image id from previous command at Image_ID
 docker tag Image_ID us-central1-docker.pkg.dev/PROJECT-ID/REPOSITORY/<Docker Image>:<Tag Name>
 
 //copy and paste the project id and repository in PROJECT-ID and REPOSITORY respectively 
